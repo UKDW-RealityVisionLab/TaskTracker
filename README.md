@@ -17,3 +17,4 @@ a simple command-line Task Tracker application that allows users to manage their
  
  # informasi tambahan lainnya seperti konsep yang digunakan
  - Memiliki atribut kode_task, judul dan deskripsi
+ - Menggunakan konsep functional programming
