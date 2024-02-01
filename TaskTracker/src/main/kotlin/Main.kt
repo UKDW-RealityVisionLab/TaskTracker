@@ -10,15 +10,35 @@ fun main() {
     val password = ""
 
     DriverManager.getConnection(connectionUrl, user, password).use { connection ->
-        while (true){
-            //Cek apakah tabel kosong
+
+        while (true) {
             if (isTableNotEmpty(connection)) {
-                print("TASK TRACKER \n1. Create\n2.Lihat list task\nMasukkan pilihan anda: ")
+                print("TASK TRACKER \n1. Create\n2. Lihat list task\nMasukkan pilihan anda: ")
+                val input: Int? = readLine()?.toInt()
+
+                when (input) {
+                    1 -> {
+                        addRow(connection)
+                        backMainState()
+                    }
+
+                    2 -> {
+                        showListTask(connection)
+                        print("pilih berdasarkan kode task(ketik 0 untuk kembali): ")
+                        val inputKodeTask = readLine()?.toInt()
+                        when (inputKodeTask) {
+                            0 -> backMainState()
+                        }
+                    }
+
+                    else -> println("Pilihan tidak valid.")
+                }
+            } else {
+                print("TASK TRACKER \n1. Create \nTask kosong, tekan 1 untuk tambah task: ")
                 var input: Int? = readLine()?.toInt()
-                if (input == 1){addRow(connection)}
-            }else {print("TASK TRACKER \n1. Create \nTask kosong, tekan 1 untuk tambah task: ")
-                var input: Int? = readLine()?.toInt()
-                if (input == 1){addRow(connection)}
+                if (input == 1) {
+                    addRow(connection)
+                }
             }
         }
 
@@ -32,9 +52,9 @@ fun addRow(connection: Connection) {
     val insertSql = "INSERT INTO tasks (judul, deskripsi) VALUES (?, ?)"
 
     // Input data pengguna
-    val judul:String? = readLine()
+    val judul: String? = readLine()
     print("Masukkan Deskripsi: ")
-    val deskripsi:String? = readLine()
+    val deskripsi: String? = readLine()
 
     // Memasukkan input pengguna kedalam insert statement
     connection.prepareStatement(insertSql).use { preparedStatement ->
@@ -43,6 +63,21 @@ fun addRow(connection: Connection) {
         preparedStatement.executeUpdate()
     }
     println("Data berhasil dimasukkan\n---")
+}
+
+//show list task
+fun showListTask(connection: Connection) {
+    val listQuery = "SELECT * FROM tasks"
+    print("--\nList task anda:\n")
+
+    connection.createStatement().use {
+        val fetchList = it.executeQuery(listQuery)
+        while (fetchList.next()) {
+            val kodeTask = fetchList.getInt("kode_task")
+            val titleTask = fetchList.getString("judul")
+            println("$kodeTask. $titleTask ")
+        }
+    }
 }
 
 fun isTableNotEmpty(connection: Connection): Boolean {
@@ -55,4 +90,8 @@ fun isTableNotEmpty(connection: Connection): Boolean {
         val rowCount = resultSet.getInt(1)
         return rowCount > 0
     }
+}
+
+fun backMainState() {
+    main()
 }
