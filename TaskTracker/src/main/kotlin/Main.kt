@@ -3,14 +3,16 @@ import java.sql.DriverManager
 import java.sql.ResultSet
 import java.sql.Statement
 
+var inputKodeTask: Int? = null
 fun main() {
     // Database connection details
-    val connectionUrl = "jdbc:mysql://localhost:3306/tasktracker_db"
+    val connectionUrl = "jdbc:mysql://localhost:3307/tasktracker_db"
     val user = "root"
     val password = ""
 
     DriverManager.getConnection(connectionUrl, user, password).use { connection ->
         if (isTableNotEmpty(connection)) {
+            print("===================================================\n")
             print("TASK TRACKER \n1. Create\n2. Lihat list task\nMasukkan pilihan anda: ")
             val input: Int? = readLine()?.toInt()
 
@@ -23,7 +25,8 @@ fun main() {
                 2 -> {
                     showListTask(connection)
                     print("pilih berdasarkan kode task(ketik 0 untuk kembali): ")
-                    val inputKodeTask = readLine()?.toInt()
+
+                    inputKodeTask = readLine()?.toInt()
                     when (inputKodeTask) {
                         0 -> backMainState()
                         else -> detailTask(connection, inputKodeTask!!)
@@ -83,10 +86,10 @@ fun showListTask(connection: Connection) {
 fun detailTask(connection: Connection, id :Int) {
     val getId= "SELECT * FROM tasks WHERE kode_task=$id"
     connection.createStatement().use {
-        val id=it.executeQuery(getId)
-        while (id.next()){
-            val tittle= id.getString("judul")
-            val desc=id.getString("deskripsi")
+        val resultId=it.executeQuery(getId)
+        while (resultId.next()){
+            val tittle= resultId.getString("judul")
+            val desc=resultId.getString("deskripsi")
             print("----Detail task $tittle----\n")
             println("Judul:$tittle\nDeskripsi:$desc")
         }
@@ -95,7 +98,34 @@ fun detailTask(connection: Connection, id :Int) {
         val input:Int= readLine()!!.toInt()
         when (input) {
             0 -> showListTask(connection)
-            else -> {}
+            1 -> {}
+            2 ->{deleteFun(connection,inputKodeTask)
+            backMainState()
+            }
+        }
+    }
+}
+
+fun deleteFun(connection: Connection,id:Int?){
+    connection.createStatement().use {
+        print("Apakah anda yakin menghapus? (Y/N): ")
+        val confirmInput: String = readLine()!!.toUpperCase()
+        when (confirmInput) {
+            "Y" -> {
+                // Delete task from the database
+                val deleteQuery = "DELETE FROM tasks WHERE kode_task=$id"
+                it.executeUpdate(deleteQuery)
+                println("Task berhasil dihapus.")
+                showListTask(connection)
+            }
+            "N" -> {
+                println("Task tidak dihapus.")
+                showListTask(connection)
+            }
+            else -> {
+                println("JAWAB Y / N BWANG ELAH DAH")
+                showListTask(connection)
+            }
         }
     }
 }
@@ -111,7 +141,6 @@ fun isTableNotEmpty(connection: Connection): Boolean {
         return rowCount > 0
     }
 }
-
 fun backMainState() {
     main()
 }
