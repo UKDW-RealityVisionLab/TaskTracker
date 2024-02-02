@@ -10,38 +10,38 @@ fun main() {
     val password = ""
 
     DriverManager.getConnection(connectionUrl, user, password).use { connection ->
+        if (isTableNotEmpty(connection)) {
+            print("TASK TRACKER \n1. Create\n2. Lihat list task\nMasukkan pilihan anda: ")
+            val input: Int? = readLine()?.toInt()
 
-        while (true) {
-            if (isTableNotEmpty(connection)) {
-                print("TASK TRACKER \n1. Create\n2. Lihat list task\nMasukkan pilihan anda: ")
-                val input: Int? = readLine()?.toInt()
-
-                when (input) {
-                    1 -> {
-                        addRow(connection)
-                        backMainState()
-                    }
-
-                    2 -> {
-                        showListTask(connection)
-                        print("pilih berdasarkan kode task(ketik 0 untuk kembali): ")
-                        val inputKodeTask = readLine()?.toInt()
-                        when (inputKodeTask) {
-                            0 -> backMainState()
-                        }
-                    }
-
-                    else -> println("Pilihan tidak valid.")
-                }
-            } else {
-                print("TASK TRACKER \n1. Create \nTask kosong, tekan 1 untuk tambah task: ")
-                var input: Int? = readLine()?.toInt()
-                if (input == 1) {
+            when (input) {
+                1 -> {
                     addRow(connection)
+                    backMainState()
+                }
+
+                2 -> {
+                    showListTask(connection)
+                    print("pilih berdasarkan kode task(ketik 0 untuk kembali): ")
+                    val inputKodeTask = readLine()?.toInt()
+                    when (inputKodeTask) {
+                        0 -> backMainState()
+                        else -> detailTask(connection, inputKodeTask!!)
+                    }
+                }
+
+                else -> {
+                    println("Pilihan tidak valid.")
+                    backMainState()
                 }
             }
+        } else {
+            print("TASK TRACKER \n1. Create \nTask kosong, tekan 1 untuk tambah task: ")
+            var input: Int? = readLine()?.toInt()
+            if (input == 1) {
+                addRow(connection)
+            }
         }
-
     }
 }
 
@@ -76,6 +76,26 @@ fun showListTask(connection: Connection) {
             val kodeTask = fetchList.getInt("kode_task")
             val titleTask = fetchList.getString("judul")
             println("$kodeTask. $titleTask ")
+        }
+    }
+}
+
+fun detailTask(connection: Connection, id :Int) {
+    val getId= "SELECT * FROM tasks WHERE kode_task=$id"
+    connection.createStatement().use {
+        val id=it.executeQuery(getId)
+        while (id.next()){
+            val tittle= id.getString("judul")
+            val desc=id.getString("deskripsi")
+            print("----Detail task $tittle----\n")
+            println("Judul:$tittle\nDeskripsi:$desc")
+        }
+        println("0. kembali\n1. edit\n2. hapus")
+        print("masukkan pilihan anda sesuai angka untuk mengedit atau menghapus task:")
+        val input:Int= readLine()!!.toInt()
+        when (input) {
+            0 -> showListTask(connection)
+            else -> {}
         }
     }
 }
