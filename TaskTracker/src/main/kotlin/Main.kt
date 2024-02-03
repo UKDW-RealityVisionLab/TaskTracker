@@ -6,7 +6,7 @@ import java.sql.Statement
 var inputKodeTask: Int? = null
 fun main() {
     // Database connection details
-    val connectionUrl = "jdbc:mysql://localhost:3307/tasktracker_db"
+    val connectionUrl = "jdbc:mysql://localhost:3306/tasktracker_db"
     val user = "root"
     val password = ""
 
@@ -98,7 +98,12 @@ fun detailTask(connection: Connection, id :Int) {
         val input:Int= readLine()!!.toInt()
         when (input) {
             0 -> showListTask(connection)
-            1 -> {}
+            1 -> {
+                // Update task
+                updateTask(connection, inputKodeTask)
+                backMainState()
+
+            }
             2 ->{deleteFun(connection,inputKodeTask)
             backMainState()
             }
@@ -106,6 +111,69 @@ fun detailTask(connection: Connection, id :Int) {
     }
 }
 
+fun updateTask(connection: Connection, id: Int?) {
+
+    val selectSql = "SELECT * FROM tasks WHERE kode_task = ?"
+
+
+
+
+
+
+
+
+        print("Masukkan Judul Baru: ")
+        val newTitle: String? = readLine()
+        print("Masukkan Deskripsi Baru: ")
+        val newDesc: String? = readLine()
+        val updateSql = "UPDATE tasks SET judul=?, deskripsi=? WHERE kode_task=?"
+
+        val updateSqlCumaDeskripsi = "UPDATE tasks SET   deskripsi=? WHERE kode_task=?"
+        val updateSqlCumaTitle = "UPDATE tasks SET  judul=? WHERE kode_task=?"
+
+    if (newTitle?.isNotBlank() == true && newDesc?.isNotBlank() == true) {
+        // Update both title and description
+        connection.prepareStatement(updateSql).use { preparedStatement ->
+            preparedStatement.setString(1, newTitle)
+            preparedStatement.setString(2, newDesc)
+            preparedStatement.setInt(3, id!!)
+
+            preparedStatement.executeUpdate()
+        }
+        println("Task berhasil diupdate\n---")
+
+    } else if (newTitle?.isBlank() == true && newDesc?.isNotBlank() == true) {
+        // Update only the description
+        connection.prepareStatement(updateSqlCumaDeskripsi).use { preparedStatement ->
+            preparedStatement.setString(1, newDesc)
+            preparedStatement.setInt(2, id!!)
+
+            preparedStatement.executeUpdate()
+        }
+        println("Task berhasil diupdate\n---")
+    } else if (newTitle?.isNotBlank() == true && newDesc?.isBlank() == true) {
+        // Update only the title
+        connection.prepareStatement(updateSqlCumaTitle).use { preparedStatement ->
+            preparedStatement.setString(1, newTitle)
+            preparedStatement.setInt(2, id!!)
+
+            preparedStatement.executeUpdate()
+        }
+        println("Task berhasil diupdate\n---")
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+}
 fun deleteFun(connection: Connection,id:Int?){
     connection.createStatement().use {
         print("Apakah anda yakin menghapus? (Y/N): ")
