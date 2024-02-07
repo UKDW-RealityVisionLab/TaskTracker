@@ -1,0 +1,8 @@
+# Ignore all files
+*
+
+# Except TaskTracker/src/ and README.md
+!TaskTracker/src/
+!README.md
+!task.sql
+
