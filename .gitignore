@@ -3,6 +3,9 @@
 
 # Except TaskTracker/src/ and README.md
 !TaskTracker/src/
+!TaskTracker/gradle/
+!TaskTracker/build/
+
 !README.md
 !task.sql
 
