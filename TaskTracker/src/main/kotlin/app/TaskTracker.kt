@@ -68,7 +68,8 @@ class TaskTracker() {
             print("masukkan pilihan anda sesuai angka untuk mengedit atau menghapus task:")
             val input: Int = readLine()!!.toInt()
             when (input) {
-                0 -> showListTask(connection)
+                0 -> main.backMainState()
+
                 1 -> {
                     // Update task
                     updateTask(connection, main.inputKodeTask)
