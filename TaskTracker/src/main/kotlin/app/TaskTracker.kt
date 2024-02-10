@@ -11,17 +11,20 @@ class TaskTracker() {
     //tambah task
     fun addRow(connection: Connection) {
         print("---\nCreate Task\nMasukkan Judul: ")
-        val insertSql = "INSERT INTO tasks (judul, deskripsi) VALUES (?, ?)"
+        val insertSql = "INSERT INTO tasks (judul, deskripsi, tanggal) VALUES (?, ?, ?)"
 
         val judul: String? = readLine()
         print("Masukkan Deskripsi: ")
         val deskripsi: String? = readLine()
+        print("Masukkan Tanggal Jatuh Tempo(DD-MM-YYYY): ")
+        val tanggal: String? = readLine()
 
 
         if (judul!!.isNotBlank() && deskripsi!!.isNotBlank()) {
             connection.prepareStatement(insertSql).use { preparedStatement ->
                 preparedStatement.setString(1, judul)
                 preparedStatement.setString(2, deskripsi)
+                preparedStatement.setString(3, tanggal)
                 preparedStatement.executeUpdate()
             }
             println("Data berhasil dimasukkan\n---")
@@ -60,15 +63,17 @@ class TaskTracker() {
             while (resultId.next()) {
                 val tittle = resultId.getString("judul")
                 val desc = resultId.getString("deskripsi")
+                val tgl = resultId.getString("tanggal")
                 print("----Detail task $tittle----\n")
-                println("Judul:$tittle\nDeskripsi:$desc")
+                println("Judul:$tittle\nDeskripsi:$desc\nTanggal Jatuh Tempo:$tgl")
             }
 
             println("0. kembali\n1. edit\n2. hapus")
             print("masukkan pilihan anda sesuai angka untuk mengedit atau menghapus task:")
             val input: Int = readLine()!!.toInt()
             when (input) {
-                0 -> showListTask(connection)
+                0 -> main.backMainState()
+
                 1 -> {
                     // Update task
                     updateTask(connection, main.inputKodeTask)
@@ -117,23 +122,28 @@ class TaskTracker() {
         val newTitle: String? = readLine()
         print("Masukkan Deskripsi Baru: ")
         val newDesc: String? = readLine()
-        val updateSql = "UPDATE tasks SET judul=?, deskripsi=? WHERE kode_task=?"
+        print("Masukkan Tanggal Jatuh Tempo Baru(DD-MM-YYYY): ")
+        val newTgl: String? = readLine()
+
+        val updateSql = "UPDATE tasks SET judul=?, deskripsi=?, tanggal=? WHERE kode_task=?"
 
         val updateSqlCumaDeskripsi = "UPDATE tasks SET   deskripsi=? WHERE kode_task=?"
         val updateSqlCumaTitle = "UPDATE tasks SET  judul=? WHERE kode_task=?"
+        val updateSqlCumaTgl = "UPDATE tasks SET  tanggal=? WHERE kode_task=?"
 
-        if (newTitle?.isNotBlank() == true && newDesc?.isNotBlank() == true) {
+        if (newTitle?.isNotBlank() == true && newDesc?.isNotBlank() == true && newTgl?.isNotBlank() == true)  {
 
             connection.prepareStatement(updateSql).use { preparedStatement ->
                 preparedStatement.setString(1, newTitle)
                 preparedStatement.setString(2, newDesc)
-                preparedStatement.setInt(3, id!!)
+                preparedStatement.setString(3, newTgl)
+                preparedStatement.setInt(4, id!!)
 
                 preparedStatement.executeUpdate()
             }
             println("Task berhasil diupdate\n---")
 
-        } else if (newTitle?.isBlank() == true && newDesc?.isNotBlank() == true) {
+        } else if (newTitle?.isBlank() == true && newDesc?.isNotBlank() == true && newTgl?.isNotBlank() == true) {
             // Update only the description
             connection.prepareStatement(updateSqlCumaDeskripsi).use { preparedStatement ->
                 preparedStatement.setString(1, newDesc)
@@ -142,7 +152,7 @@ class TaskTracker() {
                 preparedStatement.executeUpdate()
             }
             println("Task berhasil diupdate\n---")
-        } else if (newTitle?.isNotBlank() == true && newDesc?.isBlank() == true) {
+        } else if (newTitle?.isNotBlank() == true && newDesc?.isBlank() == true && newTgl?.isNotBlank() == true) {
             // Update only the title
             connection.prepareStatement(updateSqlCumaTitle).use { preparedStatement ->
                 preparedStatement.setString(1, newTitle)
@@ -151,8 +161,16 @@ class TaskTracker() {
                 preparedStatement.executeUpdate()
             }
             println("Task berhasil diupdate\n---")
+        } else if (newTitle?.isNotBlank() == true && newTgl?.isBlank() == true && newDesc?.isNotBlank() == true) {
+            // Update only the tanggal
+            connection.prepareStatement(updateSqlCumaTgl).use { preparedStatement ->
+                preparedStatement.setString(1, newTgl)
+                preparedStatement.setInt(2, id!!)
+
+                preparedStatement.executeUpdate()
+            }
+            println("Task berhasil diupdate\n---")
+
         }
-
-
     }
 }
