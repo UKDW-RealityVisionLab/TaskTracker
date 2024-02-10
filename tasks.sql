@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 31 Jan 2024 pada 15.02
--- Versi server: 10.4.28-MariaDB
--- Versi PHP: 8.2.4
+-- Generation Time: Feb 10, 2024 at 07:16 AM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,42 +24,49 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tasks`
+-- Table structure for table `tasks`
 --
 
 CREATE TABLE `tasks` (
-  `kode_task` int(11) NOT NULL,
-  `judul` varchar(50) NOT NULL,
-  `deskripsi` text NOT NULL
+                         `kode_task` int(11) NOT NULL,
+                         `judul` varchar(50) NOT NULL,
+                         `deskripsi` text NOT NULL,
+                         `tanggal` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `tasks`
+-- Dumping data for table `tasks`
 --
 
-INSERT INTO `tasks` (`kode_task`, `judul`, `deskripsi`) VALUES
-(1, 'Test', 'deskripsinya'),
-(2, 'test2', 'deskripsi2');
+INSERT INTO `tasks` (`kode_task`, `judul`, `deskripsi`, `tanggal`) VALUES
+                                                                       (10, 'coba', 'cobalah', '25-02-2024'),
+                                                                       (12, 'minum', 'minum air', '13-02-2024'),
+                                                                       (13, 'makan', 'makan nasi', '16-02-2024'),
+                                                                       (14, 'belajar', 'belajar kotlin', '17-02-2024'),
+                                                                       (15, 'kelas kotlin', 'belajar membuat program kotlin', '21-02-2024'),
+                                                                       (16, 'ngeFiks Bug', 'memperbaiki bug yang muncul', '23-02-2024'),
+                                                                       (17, 'TaskProjeck', 'Mengerjakan projeck sederhana', '24-02-2024'),
+                                                                       (18, 'mandi pakai sabun', 'biar wangi', '26-02-2024');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indeks untuk tabel `tasks`
+-- Indexes for table `tasks`
 --
 ALTER TABLE `tasks`
-  ADD PRIMARY KEY (`kode_task`);
+    ADD PRIMARY KEY (`kode_task`);
 
 --
--- AUTO_INCREMENT untuk tabel yang dibuang
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT untuk tabel `tasks`
+-- AUTO_INCREMENT for table `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `kode_task` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+    MODIFY `kode_task` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
