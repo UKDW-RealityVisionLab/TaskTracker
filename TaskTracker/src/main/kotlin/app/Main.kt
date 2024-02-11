@@ -34,20 +34,22 @@ class Main(private val taskTracker: TaskTracker) {
                                 println("List task anda:")
                                 if (listData.isNotEmpty()) {
                                     println("TODO TASK:")
-                                    taskKategori["TODO"]!!.forEach { println("${it.id}. ${it.title}") }
+                                    taskKategori["TODO"]?.forEach { println("${it.id}. ${it.title}") }
                                     println("----------------------------")
 
                                     println("IN PROGRESS TASK:")
-                                    taskKategori["IN PROGRESS"]!!.forEach { println("${it.id}. ${it.title}") }
+                                    taskKategori["IN PROGRESS"]?.forEach { println("${it.id}. ${it.title}") }
                                     println("----------------------------")
 
                                     println("DONE TASK:")
-                                    taskKategori["DONE"]!!.forEach {
+                                    taskKategori["DONE"]?.forEach {
                                         println("${it.id}. ${it.title}")
                                     }
                                     println("----------------------------")
 
-
+                                }
+                                else {
+                                    println("empty")
                                 }
                             }
 
