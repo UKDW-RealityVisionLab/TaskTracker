@@ -71,59 +71,6 @@ class Main(private val taskTracker: TaskTracker) {
                         }
                     }
 
-                    3 -> {
-                        print("1. Search by Kode\n2. Search by Title\nMasukkan pilihan anda: ")
-                        val input: Int? = readLine()?.toInt()
-                        if (input==1) {
-                            when (val resultData = taskTracker.search_kode(connection)) {
-                                is Helper.Success -> {
-                                    val listData = resultData.data
-                                    listData.forEach {
-                                        println("${it.id}. ${it.title}")
-                                    }
-                                }
-
-                                is Helper.Failed -> {
-                                    println("Error: ${resultData.errorMessage}")
-                                }
-                            }
-
-                            print("pilih berdasarkan kode task(ketik 0 untuk kembali): ")
-
-                            inputKodeTask = readLine()?.toInt()
-                            when (inputKodeTask) {
-                                0 -> backMainState()
-                                else -> taskTracker.detailTask(connection, inputKodeTask!!, this)
-                            }
-                        }
-                        else if(input==2){
-                            when (val resultData = taskTracker.search_judul(connection)) {
-                                is Helper.Success -> {
-                                    val listData = resultData.data
-                                    listData.forEach {
-                                        println("${it.id}. ${it.title}")
-                                    }
-                                }
-
-                                is Helper.Failed -> {
-                                    println("Error: ${resultData.errorMessage}")
-                                }
-                            }
-
-                            print("pilih berdasarkan kode task(ketik 0 untuk kembali): ")
-
-                            inputKodeTask = readLine()?.toInt()
-                            when (inputKodeTask) {
-                                0 -> backMainState()
-                                else -> taskTracker.detailTask(connection, inputKodeTask!!, this)
-                            }
-
-                        }
-                        else{
-                            print("Pilihan anda tidak valid !")
-                        }
-                    }
-
                     else -> {
                         println("Pilihan tidak valid.")
                         backMainState()
