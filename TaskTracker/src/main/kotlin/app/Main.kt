@@ -30,8 +30,24 @@ class Main(private val taskTracker: TaskTracker) {
                         when (val resultData = taskTracker.showListTask(connection)) {
                             is Helper.Success -> {
                                 val listData = resultData.data
-                                listData.forEach {
-                                    println("${it.id}. ${it.title}")
+                                val taskKategori = listData.groupBy { it.status }
+                                println("List task anda:")
+                                if (listData.isNotEmpty()) {
+                                    println("TODO TASK:")
+                                    taskKategori["TODO"]!!.forEach { println("${it.id}. ${it.title}") }
+                                    println("----------------------------")
+
+                                    println("IN PROGRESS TASK:")
+                                    taskKategori["IN PROGRESS"]!!.forEach { println("${it.id}. ${it.title}") }
+                                    println("----------------------------")
+
+                                    println("DONE TASK:")
+                                    taskKategori["DONE"]!!.forEach {
+                                        println("${it.id}. ${it.title}")
+                                    }
+                                    println("----------------------------")
+
+
                                 }
                             }
 
@@ -39,6 +55,7 @@ class Main(private val taskTracker: TaskTracker) {
                                 println("Error: ${resultData.errorMessage}")
                             }
                         }
+
 
                         print("pilih berdasarkan kode task(ketik 0 untuk kembali): ")
 
