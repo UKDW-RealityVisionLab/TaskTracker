@@ -10,14 +10,14 @@ class Main(private val taskTracker: TaskTracker) {
 
     fun mainApp() {
         // Database connection details
-        val connectionUrl = "jdbc:mysql://localhost:3306/tasktracker_db"
+        val connectionUrl = "jdbc:mysql://localhost:3306/tasktracker_db1"
         val user = "root"
         val password = ""
 
         DriverManager.getConnection(connectionUrl, user, password).use { connection ->
             if (isTableNotEmpty(connection)) {
                 print("===================================================\n")
-                print("TASK TRACKER \n1. Create\n2. Lihat list task\nMasukkan pilihan anda: ")
+                print("TASK TRACKER \n1. Create\n2. Lihat list task\n3. Cari Task\nMasukkan pilihan anda: ")
                 val input: Int? = readLine()?.toInt()
 
                 when (input) {
@@ -46,6 +46,59 @@ class Main(private val taskTracker: TaskTracker) {
                         when (inputKodeTask) {
                             0 -> backMainState()
                             else -> taskTracker.detailTask(connection, inputKodeTask!!, this)
+                        }
+                    }
+
+                    3 -> {
+                        print("1. Search by Kode\n2. Search by Title\nMasukkan pilihan anda: ")
+                        val input: Int? = readLine()?.toInt()
+                        if (input==1) {
+                            when (val resultData = taskTracker.search_kode(connection)) {
+                                is Helper.Success -> {
+                                    val listData = resultData.data
+                                    listData.forEach {
+                                        println("${it.id}. ${it.title}")
+                                    }
+                                }
+
+                                is Helper.Failed -> {
+                                    println("Error: ${resultData.errorMessage}")
+                                }
+                            }
+
+                            print("pilih berdasarkan kode task(ketik 0 untuk kembali): ")
+
+                            inputKodeTask = readLine()?.toInt()
+                            when (inputKodeTask) {
+                                0 -> backMainState()
+                                else -> taskTracker.detailTask(connection, inputKodeTask!!, this)
+                            }
+                        }
+                        else if(input==2){
+                            when (val resultData = taskTracker.search_judul(connection)) {
+                                is Helper.Success -> {
+                                    val listData = resultData.data
+                                    listData.forEach {
+                                        println("${it.id}. ${it.title}")
+                                    }
+                                }
+
+                                is Helper.Failed -> {
+                                    println("Error: ${resultData.errorMessage}")
+                                }
+                            }
+
+                            print("pilih berdasarkan kode task(ketik 0 untuk kembali): ")
+
+                            inputKodeTask = readLine()?.toInt()
+                            when (inputKodeTask) {
+                                0 -> backMainState()
+                                else -> taskTracker.detailTask(connection, inputKodeTask!!, this)
+                            }
+
+                        }
+                        else{
+                            print("Pilihan anda tidak valid !")
                         }
                     }
 

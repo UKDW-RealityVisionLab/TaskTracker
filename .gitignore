@@ -1,2 +1,3 @@
-/TaskTracker/.gradle/kotlin/errors
-/TaskTracker/.gradle/kotlin/sessions
+*
+!/TaskTracker/src
+!task.sql
