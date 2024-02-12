@@ -1,0 +1,4 @@
+D:\TaskTracker1\TaskTracker\TaskTracker\src\main\kotlin\app\Main.kt
+D:\TaskTracker1\TaskTracker\TaskTracker\src\main\kotlin\app\TaskTracker.kt
+D:\TaskTracker1\TaskTracker\TaskTracker\src\main\kotlin\Helper.kt
+D:\TaskTracker1\TaskTracker\TaskTracker\src\main\kotlin\atribut\TaskAtribut.kt
