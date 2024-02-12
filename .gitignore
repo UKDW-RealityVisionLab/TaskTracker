@@ -1,4 +1,9 @@
 *
-!README.MD
+<<<<<<< HEAD
+!/TaskTracker/src
+!task.sql
+=======
 !tasks.sql
-!/TaksTracker/src
+!\TaskTracker\src
+!\TaskTracker\build.gradle.kts
+>>>>>>> ef9766628a71f44ddfbbaa6683fd33ded36f71af
