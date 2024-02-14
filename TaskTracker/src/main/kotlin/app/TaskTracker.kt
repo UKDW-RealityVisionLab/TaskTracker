@@ -78,7 +78,8 @@ class TaskTracker() {
                     val desc = fetchList.getString("deskripsi")
                     val prio=  fetchList.getString("prioritas")
                     val status=  fetchList.getString("status")
-                    task.add(TaskAtribut(kodeTask, titleTask, desc, status, prio, status))
+                    val tgl= fetchList.getString("tanggal")
+                    task.add(TaskAtribut(id=kodeTask, title = titleTask, deskripsi = desc, prio = prio, status = status, tanggal =tgl ))
                 }
                 Helper.Success(task)
             }
