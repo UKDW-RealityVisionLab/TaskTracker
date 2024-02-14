@@ -18,25 +18,48 @@ class TaskTracker() {
         val deskripsi: String? = readLine()
         print("Masukkan Tanggal Jatuh Tempo(DD-MM-YYYY): ")
         val tanggal: String? = readLine()
-        print("Masukkan Prioritas Task (low/medium/high): ")
-        val prioritas: String? = readLine()
-        print("Masukkan Status (TODO/IN PROGRESS/DONE): ")
-        val status: String? = readLine()!!.uppercase()
-
-
-        if (judul!!.isNotBlank() && deskripsi!!.isNotBlank()) {
-            connection.prepareStatement(insertSql).use { preparedStatement ->
-                preparedStatement.setString(1, judul)
-                preparedStatement.setString(2, deskripsi)
-                preparedStatement.setString(3, tanggal)
-                preparedStatement.setString(4, prioritas)
-                preparedStatement.setString(5,status)
-                preparedStatement.executeUpdate()
+        var prioritas: String?
+        do {
+            print("Masukkan Prioritas Task (low/medium/high): ")
+            prioritas = readLine()?.lowercase()
+            if (prioritas !in listOf("low", "medium", "high")) {
+                println("Hanya dapat memasukkan input low / medium / high saja")
             }
-            println("Data berhasil dimasukkan\n---")
-        } else {
-            println("Judul dan Deskripsi tidak boleh kosong\n---")
+        } while (prioritas !in listOf("low", "medium", "high"))
+
+        var status: String?
+        do {
+            print("Masukkan Status Task (TODO/IN PROGRESS/DONE): ")
+            status = readLine()?.uppercase()
+            if (status !in listOf("TODO" ,"IN PROGRESS" ,"DONE"))  {
+                println("Hanya dapat memasukkan input TODO/IN PROGRESS/DONE")
+            }
+        } while (status !in listOf("TODO" ,"IN PROGRESS" ,"DONE"))
+
+
+        print("Apakah anda yakin menambahkan?\n Judul : $judul\n Deskripsi : $deskripsi\n Tanggal : $tanggal\n Prioritas : $prioritas\n Status: $status\n (Y/N): ")
+        val confirmAdd: String = readLine()!!.uppercase(Locale.getDefault())
+        when (confirmAdd) {
+            "Y"->{if (judul!!.isNotBlank() && deskripsi!!.isNotBlank()) {
+                connection.prepareStatement(insertSql).use { preparedStatement ->
+                    preparedStatement.setString(1, judul)
+                    preparedStatement.setString(2, deskripsi)
+                    preparedStatement.setString(3, tanggal)
+                    preparedStatement.setString(4, prioritas)
+                    preparedStatement.setString(5,status)
+                    preparedStatement.executeUpdate()
+                }
+                println("Data berhasil dimasukkan\n---")
+            } else {
+                println("Judul dan Deskripsi dan Tanggal dan Prioritas tidak boleh kosong\n---")
 //            main.backMainState()
+            }
+            }
+            "N"->{
+                println("Data tidak berhasil dimasukkan\n---")
+            }else -> {
+            println("JAWAB HANYA Y ATAU N SAJA")
+        }
         }
     }
 
@@ -134,10 +157,23 @@ class TaskTracker() {
         val newDesc: String? = readLine()
         print("Masukkan Tanggal Jatuh Tempo Baru(DD-MM-YYYY): ")
         val newTgl: String? = readLine()
-        print("Masukkan Prioritas Baru (low, medium, high): ")
-        val newPrior: String? = readLine()
-        print("Masukkan status Baru (TODO/IN PROGRESS/DONE): ")
-        val newstatus: String? = readLine()?.uppercase()
+        var newPrioritas: String?
+        do {
+            print("Masukkan Prioritas Task (low/medium/high): ")
+            newPrioritas = readLine()?.lowercase()
+            if (newPrioritas !in listOf("low", "medium", "high")) {
+                println("Hanya dapat memasukkan input low / medium / high")
+            }
+        } while (newPrioritas !in listOf("low", "medium", "high"))
+
+        var newStatus: String?
+        do {
+            print("Masukkan Status Task (TODO/IN PROGRESS/DONE): ")
+            newStatus = readLine()?.uppercase()
+            if (newStatus !in listOf("TODO", "IN PROGRESS", "DONE")) {
+                println("Hanya dapat memasukkan input TODO/IN PROGRESS/DONE")
+            }
+        } while (newStatus !in listOf("TODO", "IN PROGRESS", "DONE"))
 
         val updateSql = "UPDATE tasks SET judul=?, deskripsi=?, tanggal=?, prioritas=? WHERE kode_task=?"
 
@@ -147,71 +183,84 @@ class TaskTracker() {
         val updateSqlCumaPrior = "UPDATE tasks SET prioritas =? WHERE kode_task=?"
         val updateSqlCumastatus = "UPDATE tasks SET status =? WHERE kode_task=?"
 
-        if (newTitle?.isNotBlank() == true && newDesc?.isNotBlank() == true && newTgl?.isNotBlank() == true)  {
+        print("Apakah anda yakin mengubah data? (Y/N): ")
+        val confirmUpdate: String = readLine()!!.uppercase(Locale.getDefault())
+        when (confirmUpdate) {
+            "Y" -> {
+                if (newTitle?.isNotBlank() == true && newDesc?.isNotBlank() == true && newTgl?.isNotBlank() == true) {
 
-            connection.prepareStatement(updateSql).use { preparedStatement ->
-                preparedStatement.setString(1, newTitle)
-                preparedStatement.setString(2, newDesc)
-                preparedStatement.setString(3, newTgl)
-                preparedStatement.setString(4,newPrior)
-                preparedStatement.setInt(5, id!!)
+                    connection.prepareStatement(updateSql).use { preparedStatement ->
+                        preparedStatement.setString(1, newTitle)
+                        preparedStatement.setString(2, newDesc)
+                        preparedStatement.setString(3, newTgl)
+                        preparedStatement.setString(4, newPrioritas)
+                        preparedStatement.setInt(5, id!!)
 
-                preparedStatement.executeUpdate()
+                        preparedStatement.executeUpdate()
+                    }
+                    println("Task berhasil diupdate\n---")
+
+                } else if (newTitle?.isBlank() == true && newDesc?.isNotBlank() == true && newTgl?.isNotBlank() == true) {
+                    // Update only the description
+                    connection.prepareStatement(updateSqlCumaDeskripsi).use { preparedStatement ->
+                        preparedStatement.setString(1, newDesc)
+                        preparedStatement.setInt(2, id!!)
+
+                        preparedStatement.executeUpdate()
+                    }
+                    println("Task berhasil diupdate\n---")
+                } else if (newTitle?.isNotBlank() == true && newDesc?.isBlank() == true && newTgl?.isNotBlank() == true) {
+                    // Update only the title
+                    connection.prepareStatement(updateSqlCumaTitle).use { preparedStatement ->
+                        preparedStatement.setString(1, newTitle)
+                        preparedStatement.setInt(2, id!!)
+
+                        preparedStatement.executeUpdate()
+                    }
+                    println("Task berhasil diupdate\n---")
+                } else if (newTitle?.isNotBlank() == true && newTgl?.isBlank() == true && newDesc?.isNotBlank() == true) {
+                    // Update only the tanggal
+                    connection.prepareStatement(updateSqlCumaTgl).use { preparedStatement ->
+                        preparedStatement.setString(1, newTgl)
+                        preparedStatement.setInt(2, id!!)
+
+                        preparedStatement.executeUpdate()
+                    }
+                    println("Task berhasil diupdate\n---")
+
+                } else if (newTitle?.isBlank() == true && newTgl?.isBlank() == true && newDesc?.isBlank() == true && newPrioritas?.isNotBlank() == true) {
+                    // hanya update prioritas
+                    connection.prepareStatement(updateSqlCumaPrior).use { preparedStatement ->
+                        preparedStatement.setString(1, newPrioritas)
+                        preparedStatement.setInt(2, id!!)
+
+                        preparedStatement.executeUpdate()
+                    }
+                    println("Task berhasil diupdate\n---")
+
+                } else if (newStatus?.isNotBlank() == true && newTitle?.isBlank() == true && newTgl?.isBlank() == true && newDesc?.isBlank() == true && newPrioritas?.isBlank() == true) {
+                    // hanya update status
+                    connection.prepareStatement(updateSqlCumastatus).use { preparedStatement ->
+                        preparedStatement.setString(1, newStatus)
+                        preparedStatement.setInt(2, id!!)
+
+                        preparedStatement.executeUpdate()
+                    }
+                    println("Task berhasil diupdate\n---")
+
+                }
             }
-            println("Task berhasil diupdate\n---")
 
-        } else if (newTitle?.isBlank() == true && newDesc?.isNotBlank() == true && newTgl?.isNotBlank() == true) {
-            // Update only the description
-            connection.prepareStatement(updateSqlCumaDeskripsi).use { preparedStatement ->
-                preparedStatement.setString(1, newDesc)
-                preparedStatement.setInt(2, id!!)
-
-                preparedStatement.executeUpdate()
+            "N" -> {
+                println("Data tidak berhasil diupdate\n---")
             }
-            println("Task berhasil diupdate\n---")
-        } else if (newTitle?.isNotBlank() == true && newDesc?.isBlank() == true && newTgl?.isNotBlank() == true) {
-            // Update only the title
-            connection.prepareStatement(updateSqlCumaTitle).use { preparedStatement ->
-                preparedStatement.setString(1, newTitle)
-                preparedStatement.setInt(2, id!!)
 
-                preparedStatement.executeUpdate()
+            else -> {
+                println("JAWAB HANYA Y ATAU N SAJA")
             }
-            println("Task berhasil diupdate\n---")
-        } else if (newTitle?.isNotBlank() == true && newTgl?.isBlank() == true && newDesc?.isNotBlank() == true) {
-            // Update only the tanggal
-            connection.prepareStatement(updateSqlCumaTgl).use { preparedStatement ->
-                preparedStatement.setString(1, newTgl)
-                preparedStatement.setInt(2, id!!)
-
-                preparedStatement.executeUpdate()
-            }
-            println("Task berhasil diupdate\n---")
-
-        } else if (newTitle?.isBlank() == true && newTgl?.isBlank() == true && newDesc?.isBlank() == true && newPrior?.isNotBlank()==true) {
-            // hanya update prioritas
-            connection.prepareStatement(updateSqlCumaPrior).use { preparedStatement ->
-                preparedStatement.setString(1, newPrior)
-                preparedStatement.setInt(2, id!!)
-
-                preparedStatement.executeUpdate()
-            }
-            println("Task berhasil diupdate\n---")
-
-        }else if (newstatus?.isNotBlank() == true && newTitle?.isBlank() == true && newTgl?.isBlank() == true && newDesc?.isBlank() == true && newPrior?.isBlank()==true) {
-            // hanya update status
-            connection.prepareStatement(updateSqlCumastatus).use { preparedStatement ->
-                preparedStatement.setString(1, newstatus)
-                preparedStatement.setInt(2, id!!)
-
-                preparedStatement.executeUpdate()
-            }
-            println("Task berhasil diupdate\n---")
-
         }
+
     }
-
-
 
 
 
