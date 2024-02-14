@@ -53,8 +53,9 @@ class TaskTracker() {
                     val kodeTask = fetchList.getInt("kode_task")
                     val titleTask = fetchList.getString("judul")
                     val desc = fetchList.getString("deskripsi")
-                    val status= fetchList.getString("status")
-                    task.add(TaskAtribut(kodeTask, titleTask, desc, status))
+                    val prio=  fetchList.getString("prioritas")
+                    val status=  fetchList.getString("status")
+                    task.add(TaskAtribut(kodeTask, titleTask, desc, status, prio, status))
                 }
                 Helper.Success(task)
             }
@@ -209,4 +210,319 @@ class TaskTracker() {
 
         }
     }
+
+
+
+
+
+
+
+
+
+
+    fun search_judul(connection: Connection): Helper<MutableList<TaskAtribut>> {
+        val task = mutableListOf<TaskAtribut>()
+
+
+        print("Masukkan Kata Kunci : ")
+        val kataKunci: String? = readLine()
+        val listQuery = "SELECT * FROM tasks where judul like " + "'%$kataKunci%';"
+
+
+
+
+        print("--\nList task anda:\n")
+
+        return try {
+            connection.createStatement().use {
+                val fetchList = it.executeQuery(listQuery)
+                while (fetchList.next()) {
+                    val kodeTask = fetchList.getInt("kode_task")
+                    val titleTask = fetchList.getString("judul")
+                    val desc = fetchList.getString("deskripsi")
+                    val tgl=  fetchList.getString("tanggal")
+                    val prio=  fetchList.getString("prioritas")
+                    val status=  fetchList.getString("status")
+                    task.add(TaskAtribut(kodeTask, titleTask, desc,tgl,prio,status))
+                }
+                Helper.Success(task)
+            }
+        } catch (e: Exception) {
+            Helper.Failed("fail to get task: ${e.message}")
+        }
+    }
+
+    fun search_kode(connection: Connection): Helper<MutableList<TaskAtribut>> {
+        val task = mutableListOf<TaskAtribut>()
+
+
+        print("Masukkan Kata Kunci : ")
+        val kataKunci: String? = readLine()
+        val listQuery = "SELECT * FROM tasks where kode_task like " + "'%$kataKunci%';"
+
+
+
+
+        print("--\nList task anda:\n")
+
+        return try {
+            connection.createStatement().use {
+                val fetchList = it.executeQuery(listQuery)
+                while (fetchList.next()) {
+                    val kodeTask = fetchList.getInt("kode_task")
+                    val titleTask = fetchList.getString("judul")
+                    val desc = fetchList.getString("deskripsi")
+                    val tgl=  fetchList.getString("tanggal")
+                    val prio=  fetchList.getString("prioritas")
+                    val status=  fetchList.getString("status")
+                    task.add(TaskAtribut(kodeTask, titleTask, desc,tgl,prio,status))                }
+                Helper.Success(task)
+            }
+        } catch (e: Exception) {
+            Helper.Failed("fail to get task: ${e.message}")
+        }
+    }
+
+
+    fun search_status(connection: Connection): Helper<MutableList<TaskAtribut>> {
+        val task = mutableListOf<TaskAtribut>()
+
+
+        print("Masukkan Kata Kunci : ")
+        val kataKunci: String? = readLine()
+        val listQuery = "SELECT * FROM tasks where status like " + "'%$kataKunci%';"
+
+
+
+
+        print("--\nList task anda:\n")
+
+        return try {
+            connection.createStatement().use {
+                val fetchList = it.executeQuery(listQuery)
+                while (fetchList.next()) {
+                    val kodeTask = fetchList.getInt("kode_task")
+                    val titleTask = fetchList.getString("judul")
+                    val desc = fetchList.getString("deskripsi")
+                    val tgl=  fetchList.getString("tanggal")
+                    val prio=  fetchList.getString("prioritas")
+                    val status=  fetchList.getString("status")
+                    task.add(TaskAtribut(kodeTask, titleTask, desc,tgl,prio,status))                }
+                Helper.Success(task)
+            }
+        } catch (e: Exception) {
+            Helper.Failed("fail to get task: ${e.message}")
+        }
+    }
+
+
+
+
+
+
+
+    fun search_prioritasLow(connection: Connection): Helper<MutableList<TaskAtribut>> {
+        val task = mutableListOf<TaskAtribut>()
+
+
+
+        val listQuery = "SELECT * FROM tasks where prioritas = " + "'low';"
+
+
+
+
+        print("--\nList task anda:\n")
+
+        return try {
+            connection.createStatement().use {
+                val fetchList = it.executeQuery(listQuery)
+                while (fetchList.next()) {
+                    val kodeTask = fetchList.getInt("kode_task")
+                    val titleTask = fetchList.getString("judul")
+                    val desc = fetchList.getString("deskripsi")
+                    val tgl=  fetchList.getString("tanggal")
+                    val prio=  fetchList.getString("prioritas")
+                    val status=  fetchList.getString("status")
+                    task.add(TaskAtribut(kodeTask, titleTask, desc,tgl,prio,status))
+                }
+                Helper.Success(task)
+            }
+        } catch (e: Exception) {
+            Helper.Failed("fail to get task: ${e.message}")
+        }
+    }
+
+
+
+
+
+    fun search_prioritasMedium(connection: Connection): Helper<MutableList<TaskAtribut>> {
+        val task = mutableListOf<TaskAtribut>()
+
+
+
+        val listQuery = "SELECT * FROM tasks where prioritas = " + "'medium';"
+
+
+
+
+        print("--\nList task anda:\n")
+
+        return try {
+            connection.createStatement().use {
+                val fetchList = it.executeQuery(listQuery)
+                while (fetchList.next()) {
+                    val kodeTask = fetchList.getInt("kode_task")
+                    val titleTask = fetchList.getString("judul")
+                    val desc = fetchList.getString("deskripsi")
+                    val tgl=  fetchList.getString("tanggal")
+                    val prio=  fetchList.getString("prioritas")
+                    val status=  fetchList.getString("status")
+                    task.add(TaskAtribut(kodeTask, titleTask, desc,tgl,prio,status))
+                }
+                Helper.Success(task)
+            }
+        } catch (e: Exception) {
+            Helper.Failed("fail to get task: ${e.message}")
+        }
+    }
+
+
+    fun search_prioritasHigh(connection: Connection): Helper<MutableList<TaskAtribut>> {
+        val task = mutableListOf<TaskAtribut>()
+
+
+
+        val listQuery = "SELECT * FROM tasks where prioritas = " + "'high';"
+
+
+
+
+        print("--\nList task anda:\n")
+
+        return try {
+            connection.createStatement().use {
+                val fetchList = it.executeQuery(listQuery)
+                while (fetchList.next()) {
+                    val kodeTask = fetchList.getInt("kode_task")
+                    val titleTask = fetchList.getString("judul")
+                    val desc = fetchList.getString("deskripsi")
+                    val tgl=  fetchList.getString("tanggal")
+                    val prio=  fetchList.getString("prioritas")
+                    val status=  fetchList.getString("status")
+                    task.add(TaskAtribut(kodeTask, titleTask, desc,tgl,prio,status))                 }
+                Helper.Success(task)
+            }
+        } catch (e: Exception) {
+            Helper.Failed("fail to get task: ${e.message}")
+        }
+    }
+
+
+
+
+    fun search_statusTODO(connection: Connection): Helper<MutableList<TaskAtribut>> {
+        val task = mutableListOf<TaskAtribut>()
+
+
+
+        val listQuery = "SELECT * FROM tasks where status = " + "'TODO';"
+
+
+
+
+        print("--\nList task anda:\n")
+
+        return try {
+            connection.createStatement().use {
+                val fetchList = it.executeQuery(listQuery)
+                while (fetchList.next()) {
+                    val kodeTask = fetchList.getInt("kode_task")
+                    val titleTask = fetchList.getString("judul")
+                    val desc = fetchList.getString("deskripsi")
+                    val tgl=  fetchList.getString("tanggal")
+                    val prio=  fetchList.getString("prioritas")
+                    val status=  fetchList.getString("status")
+                    task.add(TaskAtribut(kodeTask, titleTask, desc,tgl,prio,status))                 }
+                Helper.Success(task)
+            }
+        } catch (e: Exception) {
+            Helper.Failed("fail to get task: ${e.message}")
+        }
+    }
+
+
+
+
+
+
+    fun search_statusIN_PROGRESS(connection: Connection): Helper<MutableList<TaskAtribut>> {
+        val task = mutableListOf<TaskAtribut>()
+
+
+
+        val listQuery = "SELECT * FROM tasks where status = " + "'IN PROGRESS';"
+
+
+
+
+        print("--\nList task anda:\n")
+
+        return try {
+            connection.createStatement().use {
+                val fetchList = it.executeQuery(listQuery)
+                while (fetchList.next()) {
+                    val kodeTask = fetchList.getInt("kode_task")
+                    val titleTask = fetchList.getString("judul")
+                    val desc = fetchList.getString("deskripsi")
+                    val tgl=  fetchList.getString("tanggal")
+                    val prio=  fetchList.getString("prioritas")
+                    val status=  fetchList.getString("status")
+                    task.add(TaskAtribut(kodeTask, titleTask, desc,tgl,prio,status))                 }
+                Helper.Success(task)
+            }
+        } catch (e: Exception) {
+            Helper.Failed("fail to get task: ${e.message}")
+        }
+    }
+
+
+
+
+
+
+    fun search_statusDONE(connection: Connection): Helper<MutableList<TaskAtribut>> {
+        val task = mutableListOf<TaskAtribut>()
+
+
+
+        val listQuery = "SELECT * FROM tasks where status = " + "'DONE';"
+
+
+
+
+        print("--\nList task anda:\n")
+
+        return try {
+            connection.createStatement().use {
+                val fetchList = it.executeQuery(listQuery)
+                while (fetchList.next()) {
+                    val kodeTask = fetchList.getInt("kode_task")
+                    val titleTask = fetchList.getString("judul")
+                    val desc = fetchList.getString("deskripsi")
+                    val tgl=  fetchList.getString("tanggal")
+                    val prio=  fetchList.getString("prioritas")
+                    val status=  fetchList.getString("status")
+                    task.add(TaskAtribut(kodeTask, titleTask, desc,tgl,prio,status))                 }
+                Helper.Success(task)
+            }
+        } catch (e: Exception) {
+            Helper.Failed("fail to get task: ${e.message}")
+        }
+    }
+
+
+
+
+
 }
