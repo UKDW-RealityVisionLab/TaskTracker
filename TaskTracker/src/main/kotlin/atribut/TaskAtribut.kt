@@ -4,7 +4,7 @@ data class TaskAtribut(
     val id: Int,
     val title: String,
     val deskripsi: String,
-    val status: String,
+    val tanggal: String,
     val prio: String,
-    val status1: String
+    val status: String,
 )
