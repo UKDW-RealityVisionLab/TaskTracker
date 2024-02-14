@@ -1,2 +1,2 @@
-\TaskTracker\.gradle
-\TaskTracker\build
+/TaskTracker/.gradle
+/TaskTracker/build
