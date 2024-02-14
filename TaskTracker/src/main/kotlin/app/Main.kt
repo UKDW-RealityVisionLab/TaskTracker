@@ -10,7 +10,7 @@ class Main(private val taskTracker: TaskTracker) {
 
     fun mainApp() {
         // Database connection details
-        val connectionUrl = "jdbc:mysql://localhost:3307/tasktracker_db"
+        val connectionUrl = "jdbc:mysql://localhost:3306/tasktracker_db"
         val user = "root"
         val password = ""
 
