@@ -158,21 +158,30 @@ class TaskTracker() {
         val newDesc: String? = readLine()
         print("Masukkan Tanggal Jatuh Tempo Baru(DD-MM-YYYY): ")
         val newTgl: String? = readLine()
-        var newPrioritas: String?
+
+        var newPrioritas: String? = null
         do {
             print("Masukkan Prioritas Task (low/medium/high): ")
-            newPrioritas = readLine()?.lowercase()
-            if (newPrioritas !in listOf("low", "medium", "high")) {
+            val userInput = readLine()?.lowercase()
+            if (userInput.isNullOrEmpty()) {
+                break
+            } else if (userInput in listOf("low", "medium", "high")) {
+                newPrioritas = userInput
+            } else {
                 println("Hanya dapat memasukkan input low / medium / high")
             }
         } while (newPrioritas !in listOf("low", "medium", "high"))
 
-        var newStatus: String?
+        var newStatus: String? = null
         do {
             print("Masukkan Status Task (TODO/IN PROGRESS/DONE): ")
-            newStatus = readLine()?.uppercase()
-            if (newStatus !in listOf("TODO", "IN PROGRESS", "DONE")) {
-                println("Hanya dapat memasukkan input TODO/IN PROGRESS/DONE")
+            val inputStatus = readLine()?.uppercase()
+            if (inputStatus.isNullOrEmpty()) {
+                break
+            } else if (inputStatus in listOf("TODO", "IN PROGRESS", "DONE")) {
+                newStatus = inputStatus
+            } else {
+                println("Hanya dapat memasukkan input TODO / IN PROGRESS / DONE")
             }
         } while (newStatus !in listOf("TODO", "IN PROGRESS", "DONE"))
 
@@ -188,21 +197,22 @@ class TaskTracker() {
         val confirmUpdate: String = readLine()!!.uppercase(Locale.getDefault())
         when (confirmUpdate) {
             "Y" -> {
-                if (newTitle?.isNotBlank() == true && newDesc?.isNotBlank() == true && newTgl?.isNotBlank() == true) {
+                if (newTitle?.isNotBlank() == true && newDesc?.isNotBlank() == true && newTgl?.isNotBlank() == true && newPrioritas?.isNotBlank() == true && newStatus?.isNotBlank() == true) {
 
                     connection.prepareStatement(updateSql).use { preparedStatement ->
                         preparedStatement.setString(1, newTitle)
                         preparedStatement.setString(2, newDesc)
                         preparedStatement.setString(3, newTgl)
                         preparedStatement.setString(4, newPrioritas)
-                        preparedStatement.setInt(5, id!!)
+                        preparedStatement.setString(5, newStatus)
+                        preparedStatement.setInt(6, id!!)
 
                         preparedStatement.executeUpdate()
                     }
                     println("Task berhasil diupdate\n---")
 
-                } else if (newTitle?.isBlank() == true && newDesc?.isNotBlank() == true && newTgl?.isNotBlank() == true) {
-                    // Update only the description
+                } else if (newTitle.isNullOrBlank()==true && newDesc?.isNotBlank() == true && newTgl.isNullOrBlank()==true && newPrioritas.isNullOrBlank() == true && newStatus.isNullOrBlank()==true) {
+                    // hanya update deskripsi
                     connection.prepareStatement(updateSqlCumaDeskripsi).use { preparedStatement ->
                         preparedStatement.setString(1, newDesc)
                         preparedStatement.setInt(2, id!!)
@@ -210,8 +220,8 @@ class TaskTracker() {
                         preparedStatement.executeUpdate()
                     }
                     println("Task berhasil diupdate\n---")
-                } else if (newTitle?.isNotBlank() == true && newDesc?.isBlank() == true && newTgl?.isNotBlank() == true) {
-                    // Update only the title
+                } else if (newTitle?.isNotBlank()==true && newDesc?.isNullOrBlank() == true && newTgl.isNullOrBlank() ==true&& newPrioritas.isNullOrBlank()==true && newStatus.isNullOrBlank()==true) {
+                    // hanya update judul
                     connection.prepareStatement(updateSqlCumaTitle).use { preparedStatement ->
                         preparedStatement.setString(1, newTitle)
                         preparedStatement.setInt(2, id!!)
@@ -219,8 +229,8 @@ class TaskTracker() {
                         preparedStatement.executeUpdate()
                     }
                     println("Task berhasil diupdate\n---")
-                } else if (newTitle?.isNotBlank() == true && newTgl?.isBlank() == true && newDesc?.isNotBlank() == true) {
-                    // Update only the tanggal
+                } else if (newTitle?.isNullOrBlank()==true && newDesc?.isNullOrBlank() == true && newTgl?.isNotBlank() ==true&& newPrioritas.isNullOrBlank()==true && newStatus.isNullOrBlank()==true) {
+                    // hanya update tanggal
                     connection.prepareStatement(updateSqlCumaTgl).use { preparedStatement ->
                         preparedStatement.setString(1, newTgl)
                         preparedStatement.setInt(2, id!!)
@@ -229,7 +239,7 @@ class TaskTracker() {
                     }
                     println("Task berhasil diupdate\n---")
 
-                } else if (newTitle?.isBlank() == true && newTgl?.isBlank() == true && newDesc?.isBlank() == true && newPrioritas?.isNotBlank() == true) {
+                } else if (newTitle?.isNullOrBlank()==true && newDesc?.isNullOrBlank() == true && newTgl?.isNullOrBlank() ==true&& newPrioritas?.isNotBlank()==true && newStatus.isNullOrBlank()==true) {
                     // hanya update prioritas
                     connection.prepareStatement(updateSqlCumaPrior).use { preparedStatement ->
                         preparedStatement.setString(1, newPrioritas)
@@ -239,7 +249,7 @@ class TaskTracker() {
                     }
                     println("Task berhasil diupdate\n---")
 
-                } else if (newStatus?.isNotBlank() == true && newTitle?.isBlank() == true && newTgl?.isBlank() == true && newDesc?.isBlank() == true && newPrioritas?.isBlank() == true) {
+                } else if (newTitle?.isNullOrBlank()==true && newDesc?.isNullOrBlank() == true && newTgl?.isNullOrBlank() ==true&& newPrioritas.isNullOrBlank()==true && newStatus?.isNotBlank()==true){
                     // hanya update status
                     connection.prepareStatement(updateSqlCumastatus).use { preparedStatement ->
                         preparedStatement.setString(1, newStatus)
